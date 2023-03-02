@@ -15,12 +15,28 @@ namespace SecurityLibrary
 
         public string Decrypt(string cipherText, int key)
         {
-            throw new NotImplementedException();
+            decimal PT_length =  Math.Ceiling(cipherText.Length/(decimal)key);
+            string plainText = "";
+
+            for (int i = 0; i < PT_length; i++) {
+                
+                for (int j = i; j < cipherText.Length; j += (int)PT_length) {
+                    plainText += cipherText[j];
+                }
+            }
+            return plainText;
         }
 
         public string Encrypt(string plainText, int key)
         {
-            throw new NotImplementedException();
+            string cipher = "";
+            for (int i = 0; i < key; i++) {
+
+                for (int j = i; j < plainText.Length; j += key) {
+                    cipher += plainText[j];
+                }
+            }
+            return cipher;
         }
     }
 }

@@ -26,3 +26,12 @@ F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\Securi
 F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.csprojResolveAssemblyReference.cache
 F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.dll
 F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.pdb
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\bin\Debug\SecurityPackageTest.dll
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\bin\Debug\SecurityPackageTest.pdb
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\bin\Debug\SecurityLibrary.dll
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\bin\Debug\SecurityLibrary.pdb
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.csproj.AssemblyReference.cache
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.csproj.CoreCompileInputs.cache
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.csproj.CopyComplete
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.dll
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.pdb

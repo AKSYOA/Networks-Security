@@ -12,3 +12,9 @@ F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\Securi
 F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.csprojResolveAssemblyReference.cache
 F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.dll
 F:\GoogleDriveSync\Security 2018-2019\Students\Labs\Lab 1\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.pdb
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\bin\Debug\SecurityLibrary.dll
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\bin\Debug\SecurityLibrary.pdb
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.AssemblyReference.cache
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.CoreCompileInputs.cache
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.dll
+D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.pdb
