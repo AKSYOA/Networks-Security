@@ -18,3 +18,9 @@ D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Deb
 D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.CoreCompileInputs.cache
 D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.dll
 D:\semester 8\Security\Networks-Security\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.pdb
+E:\FCIS\4thyear\2nd_Term\Computer and Network Security\SecurityPackage\SecurityPackage\SecurityLibrary\bin\Debug\SecurityLibrary.dll
+E:\FCIS\4thyear\2nd_Term\Computer and Network Security\SecurityPackage\SecurityPackage\SecurityLibrary\bin\Debug\SecurityLibrary.pdb
+E:\FCIS\4thyear\2nd_Term\Computer and Network Security\SecurityPackage\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.AssemblyReference.cache
+E:\FCIS\4thyear\2nd_Term\Computer and Network Security\SecurityPackage\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.CoreCompileInputs.cache
+E:\FCIS\4thyear\2nd_Term\Computer and Network Security\SecurityPackage\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.dll
+E:\FCIS\4thyear\2nd_Term\Computer and Network Security\SecurityPackage\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.pdb

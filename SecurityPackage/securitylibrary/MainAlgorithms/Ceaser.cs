@@ -10,12 +10,28 @@ namespace SecurityLibrary
     {
         public string Encrypt(string plainText, int key)
         {
-            throw new NotImplementedException();
+            String cipher = "";
+            key %= 26;
+             for (int i = 0; i < plainText.Length; i ++)
+             {
+                cipher += (char)((plainText[i] + key - 'a') % 26 + 'a');
+
+            }
+            Console.WriteLine(cipher);
+            return cipher;
         }
 
         public string Decrypt(string cipherText, int key)
         {
-            throw new NotImplementedException();
+            string plainText = "";
+            key %= 26;
+
+            for (int i = 0; i < cipherText.Length; i++)
+            {
+                plainText += (char)((cipherText[i] - key - 'A' + 26) % 26 + 'A');
+            }
+            Console.WriteLine(plainText);
+            return plainText;
         }
 
         public int Analyse(string plainText, string cipherText)
