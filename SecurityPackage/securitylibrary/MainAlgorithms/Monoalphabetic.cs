@@ -9,6 +9,7 @@ namespace SecurityLibrary
 {
     public class Monoalphabetic : ICryptographicTechnique<string, string>
     {
+        string alphabetic = "abcdefghijklmnopqrstuvwxyz";
 
         public string Analyse(string plainText, string cipherText)
         {
@@ -17,16 +18,11 @@ namespace SecurityLibrary
 
         public string Decrypt(string cipherText, string key)
         {
-            string alphabetic = "abcdefghijklmnopqrstuvwxyz";
-
+            cipherText = cipherText.ToLower();
+            key = key.ToLower();
 
             String plainText = "";
             SortedList Pair_list = new SortedList();
-
-            if (cipherText.Equals(cipherText.ToUpper()))
-            {
-                alphabetic = alphabetic.ToUpper();
-            }
 
             for (int i = 0; i < key.Length; i++)
             {
@@ -49,7 +45,7 @@ namespace SecurityLibrary
 
         public string Encrypt(string plainText, string key)
         {
-            string alphabetic = "abcdefghijklmnopqrstuvwxyz";
+  
 
             String cipher = "";
             SortedList Pair_list = new SortedList();
@@ -75,6 +71,9 @@ namespace SecurityLibrary
             }
             return cipher;          
         }
+
+
+       
 
         /// <summary>
         /// Frequency Information:

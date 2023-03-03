@@ -39,6 +39,8 @@ namespace SecurityPackageTest
         {
             Monoalphabetic algorithm = new Monoalphabetic();
             string plain = algorithm.Decrypt(mainCipher, mainKey);
+            Console.WriteLine(plain);
+            string x = plain;
             Assert.IsTrue(plain.Equals(mainPlain, StringComparison.InvariantCultureIgnoreCase));
         }
 
