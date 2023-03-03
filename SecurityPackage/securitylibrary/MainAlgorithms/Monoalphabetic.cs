@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace SecurityLibrary
 {
     public class Monoalphabetic : ICryptographicTechnique<string, string>
     {
+
         public string Analyse(string plainText, string cipherText)
         {
             throw new NotImplementedException();
@@ -15,12 +17,63 @@ namespace SecurityLibrary
 
         public string Decrypt(string cipherText, string key)
         {
-            throw new NotImplementedException();
+            string alphabetic = "abcdefghijklmnopqrstuvwxyz";
+
+
+            String plainText = "";
+            SortedList Pair_list = new SortedList();
+
+            if (cipherText.Equals(cipherText.ToUpper()))
+            {
+                alphabetic = alphabetic.ToUpper();
+            }
+
+            for (int i = 0; i < key.Length; i++)
+            {
+                Pair_list.Add(key[i], alphabetic[i]);
+            }
+
+            for (int i = 0; i < cipherText.Length; i++)
+            {
+                for (int j = 0; j < alphabetic.Length; j++)
+                {
+                    if (cipherText[i].Equals(Pair_list.GetKey(j)))
+                    {
+                        plainText += Pair_list.GetByIndex(j);
+                        break;
+                    }
+                }
+            }
+            return plainText;
         }
 
         public string Encrypt(string plainText, string key)
         {
-            throw new NotImplementedException();
+            string alphabetic = "abcdefghijklmnopqrstuvwxyz";
+
+            String cipher = "";
+            SortedList Pair_list = new SortedList();
+
+            if (plainText.Equals(plainText.ToUpper()))
+            {
+                alphabetic = alphabetic.ToUpper();
+            }
+
+            for (int i=0; i < alphabetic.Length; i++){
+                Pair_list.Add(alphabetic[i], key[i]);
+            }
+
+            for (int i = 0; i < plainText.Length; i++) {
+                for (int j = 0; j < alphabetic.Length; j++)
+                {
+                    if (plainText[i].Equals(Pair_list.GetKey(j)))
+                    {
+                        cipher += Pair_list.GetByIndex(j);
+                        break;
+                    }
+                }   
+            }
+            return cipher;          
         }
 
         /// <summary>
