@@ -38,6 +38,7 @@ namespace SecurityLibrary
             return new string(key);
         }
 
+
         public string Decrypt(string cipherText, string key)
         {
             cipherText = cipherText.ToLower();
@@ -138,6 +139,7 @@ namespace SecurityLibrary
             string Char_frequency = "ETAOINSRHLDCUMFBGWYBVKXJZ";
             Char_frequency = Char_frequency.ToLower();
             int Char_Count = 0;
+            int index = 0;
 
             for (int i = 0; i < cipher.Length; i++)
             {
@@ -152,10 +154,45 @@ namespace SecurityLibrary
                 Char_Count = 0;
             }
 
-            
+
+            for (int i = 0; i < Num_Of_Char.Count; i++) 
+            {
+                int maxVal = Num_Of_Char.Values.Max();
+                char maxKey = MaxKey(Num_Of_Char, maxVal);
+
+                for (int j = 0; j < cipher.Length; j++) 
+                {
+                    if(maxKey.Equals(cipher[j]))
+                    {
+                        cipher = cipher.Replace(maxKey, Char_frequency[index]);
+                        index++;
+                        break;
+                    }
+                }
+                Num_Of_Char.Remove(maxKey);
+            }
+            return cipher;
+        }
 
 
-            return " ";
+
+
+
+
+        public char MaxKey(Dictionary<char, int> Char, int max)
+        {
+            char M_key = new char();
+            foreach (KeyValuePair<char, int> pair in Char)
+            {
+                if (pair.Value == max)
+                {
+                    M_key = pair.Key;
+                    break;
+                }
+            }
+            return M_key;
         }
     }
+
+
 }
