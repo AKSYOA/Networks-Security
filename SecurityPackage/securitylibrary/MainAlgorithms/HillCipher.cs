@@ -7,14 +7,38 @@ using System.Threading.Tasks;
 namespace SecurityLibrary
 {
     /// <summary>
-    /// The List<int> is row based. Which means that the key is given in row based manner.
+    /// The List<int> is row based. Which means that the list is given in row based manner.
     /// </summary>
     public class HillCipher : ICryptographicTechnique<List<int>, List<int>>
     {
 
         public List<int> Analyse(List<int> plainText, List<int> cipherText)
         {
-            throw new InvalidAnlysisException();
+            List<int> list = new List<int>();
+            int count = 2;
+            for (int i = 0; i < 2; i++)
+            {
+                count += 2;
+                for (int j = 0; j < 26; j++)
+                {
+                    for (int k = 0; k < 26; k++)
+                    {
+                        if (((j * plainText[0]) + (k * plainText[1])) % 26 == cipherText[i] &&
+                            ((j * plainText[2]) + (k * plainText[3])) % 26 == cipherText[i + 2])
+                        {
+                            list.Add(j);
+                            list.Add(k);
+                            break;
+                        }
+                    }
+                    if (list.Count == count)
+                        break;
+                }
+            }
+            if (list.Count < 4)
+                throw new InvalidAnlysisException();
+
+            return list;
         }
         public int CalcDet(List<int> cell, bool check)
         {
@@ -44,7 +68,7 @@ namespace SecurityLibrary
                 if (i * det % 26 == 1)
                     return i;
             }
-            return -1;
+            return 0;
         }
 
         public bool Check(List<int> key)
@@ -174,7 +198,7 @@ namespace SecurityLibrary
 
         public List<int> Analyse3By3Key(List<int> plainText, List<int> cipherText)
         {
-            throw new NotImplementedException();
+            throw new InvalidAnlysisException();
         }
 
     }
