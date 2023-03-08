@@ -7,7 +7,7 @@ Ceaser & autoKeyVigenere : Ahmed Abd El Gawad
 
 Monoalphabetic : Sa3d 
 
-HillCipher : Youssef
+~HillCipher : Youssef~
 
 playFair & RepeatingkeyVigenere : Omar
 

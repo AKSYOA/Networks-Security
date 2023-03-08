@@ -198,7 +198,34 @@ namespace SecurityLibrary
 
         public List<int> Analyse3By3Key(List<int> plainText, List<int> cipherText)
         {
-            throw new InvalidAnlysisException();
+            List<int> list = new List<int>();
+            int count = 3;
+            for (int i = 0; i < 3; i++)
+            {
+                count += 3;
+                for (int j = 0; j < 26; j++)
+                {
+                    for (int k = 0; k < 26; k++)
+                    {
+                        for (int a = 0; a < 26; a++)
+                        {
+                            if (((j * plainText[0]) + (k * plainText[1]) + (a * plainText[2])) % 26 == cipherText[i]
+                                && ((j * plainText[3]) + (k * plainText[4]) + (a * plainText[5])) % 26 == cipherText[i + 3]
+                                && ((j * plainText[6]) + (k * plainText[7]) + (a * plainText[8])) % 26 == cipherText[i + 6])
+                            {
+                                list.Add(j);
+                                list.Add(k);
+                                list.Add(a);
+                                break;
+                            }
+                        }
+
+                    }
+                    if (list.Count == count)
+                        break;
+                }
+            }
+            return list;
         }
 
     }
