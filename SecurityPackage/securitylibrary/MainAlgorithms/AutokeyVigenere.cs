@@ -20,7 +20,38 @@ namespace SecurityLibrary
 
         public string Encrypt(string plainText, string key)
         {
-            throw new NotImplementedException();
+           string keyStream = key + plainText.Substring(0, plainText.Length - key.Length);
+           char[,] tabulaRecta = generateTabulaRecta();
+           string cipher = "";
+
+           for (int i = 0; i < plainText.Length; i++)
+           {
+                cipher += tabulaRecta[plainText[i] - 'a', keyStream[i] - 'a'];
+           }
+            Console.WriteLine(cipher);
+           return cipher;
+        }
+
+        private char[,] generateTabulaRecta()
+        {
+            char[,] tabulaRecta = new char[26, 26];
+
+            for (int i = 0; i < 26; i++)
+            {
+                char firstChar =  (char) ('A' + i);
+                for (int j = 0; j < 26; j++)
+                {
+                    if (firstChar + j > 'Z')
+                    {
+                        tabulaRecta[i, j] = (char) (((firstChar + j) % ('Z' + 1)) + 'A');
+                    }else
+                    {
+                        tabulaRecta[i, j] = (char)(firstChar + j);
+                    }
+                }
+            }
+
+            return tabulaRecta;
         }
     }
 }
