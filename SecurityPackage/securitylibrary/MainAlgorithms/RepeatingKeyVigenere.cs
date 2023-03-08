@@ -27,6 +27,7 @@ namespace SecurityLibrary
             }
 
             Console.WriteLine(keyStream);
+            // TODO:: Extract the key from the keyStream
             return keyStream;
         }
 
