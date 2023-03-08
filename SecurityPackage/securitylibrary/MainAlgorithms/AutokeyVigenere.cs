@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,25 @@ namespace SecurityLibrary
 
         public string Decrypt(string cipherText, string key)
         {
-            throw new NotImplementedException();
+            char[,] tabulaRecta = generateTabulaRecta();
+            string plainText = "";
+
+            for (int i = 0; i < key.Length; i++)
+            {
+                int raw = key[i] - 'a';
+                for (int j = 0; j < 26; j++)
+                {
+                    if (tabulaRecta[raw, j] == cipherText[i])
+                    {
+                        plainText += (char)('a' + j);
+                        if (cipherText.Length != key.Length)
+                            key += (char)('a' + j);
+
+                        break;
+                    }
+                }
+            }
+            return plainText;
         }
 
         public string Encrypt(string plainText, string key)
