@@ -11,7 +11,23 @@ namespace SecurityLibrary
     {
         public string Analyse(string plainText, string cipherText)
         {
-            throw new NotImplementedException();
+            string keyStream = "";
+            char[,] tabulaRecta = generateTabulaRecta();
+
+            for (int i = 0; i < plainText.Length; i++)
+            {
+                int row = plainText[i] - 'a';
+                for (int j = 0; j < 26; j++)
+                {
+                    if (tabulaRecta[row, j] == cipherText[i])
+                    {
+                        keyStream += (char)('a' + j);
+                        break;
+                    }
+                }
+            }
+            Console.WriteLine(keyStream);
+            return keyStream;
         }
 
         public string Decrypt(string cipherText, string key)
@@ -29,7 +45,6 @@ namespace SecurityLibrary
                         plainText += (char)('a' + j);
                         if (cipherText.Length != key.Length)
                             key += (char)('a' + j);
-
                         break;
                     }
                 }
