@@ -3,11 +3,11 @@ Package for Implementing Computer Networks Security Algorithms &amp; Techniques 
 
 columnar & railFence : khalid sherif 
 
-Ceaser & autoKeyVigenere : Ahmed Abd El Gawad 
+~Ceaser & Vigenere Algorithms : Ahmed Abd El Gawad~
 
-Monoalphabetic : Sa3d 
+~Monoalphabetic : Sa3d~
 
 ~HillCipher : Youssef~
 
-playFair & RepeatingkeyVigenere : Omar
+playFair: Omar
 
