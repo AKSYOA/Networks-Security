@@ -26,9 +26,7 @@ namespace SecurityLibrary
                 }
             }
 
-            Console.WriteLine(keyStream);
-            // TODO:: Extract the key from the keyStream
-            return keyStream;
+            return extractKey(keyStream);
         }
 
         public string Decrypt(string cipherText, string key)
@@ -87,6 +85,24 @@ namespace SecurityLibrary
             }
 
             return tabulaRecta;
+        }
+
+        private string extractKey(string KeyStream)
+        {
+            int end = KeyStream.Length - 1;
+            string Key = "";
+            while (end >= 0)
+            {
+                string p = KeyStream.Substring(0, end);
+                Console.WriteLine(p);
+                if (KeyStream.EndsWith(p) && p != "")
+                {
+                    Key = KeyStream.Substring(0, KeyStream.Length - end);
+                    break;
+                }
+                end--;
+            }
+            return Key;
         }
 
     }
