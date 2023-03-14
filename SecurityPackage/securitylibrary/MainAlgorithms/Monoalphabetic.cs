@@ -13,8 +13,31 @@ namespace SecurityLibrary
 
         public string Analyse(string plainText, string cipherText)
         {
-            throw new NotImplementedException();
+            List<char> alphabet = new List<char>
+            {
+                'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
+            };
+
+            cipherText = cipherText.ToLower();
+            var key = new char[26];
+            
+            for (int i = 0; i < cipherText.Length; i++)
+            {
+                int index = plainText[i] - 'a';
+                key[index] = cipherText[i];
+                alphabet.Remove(cipherText[i]);
+            }
+
+            for (int i = 0; i < 26; i++)
+            {
+                if (key[i] != '\0')
+                    continue;
+                key[i] = alphabet[0];
+                alphabet.RemoveAt(0);
+            }
+            return new string(key);
         }
+
 
         public string Decrypt(string cipherText, string key)
         {
@@ -73,7 +96,7 @@ namespace SecurityLibrary
         }
 
 
-       
+
 
         /// <summary>
         /// Frequency Information:
@@ -106,9 +129,70 @@ namespace SecurityLibrary
         /// </summary>
         /// <param name="cipher"></param>
         /// <returns>Plain text</returns>
+        /// 
+
+        public Dictionary<char, int> Num_Of_Char = new Dictionary<char, int>();
+        
         public string AnalyseUsingCharFrequency(string cipher)
         {
-            throw new NotImplementedException();
+
+            string Char_frequency = "ETAOINSRHLDCUMFBGWYBVKXJZ";
+            Char_frequency = Char_frequency.ToLower();
+            int Char_Count = 0;
+            int index = 0;
+
+            for (int i = 0; i < cipher.Length; i++)
+            {
+                for (int j = 0; j < cipher.Length; j++)
+                {
+                    if (cipher[i] == cipher[j])
+                        Char_Count += 1;
+                }
+                if (!Num_Of_Char.ContainsKey(cipher[i]))
+                    Num_Of_Char.Add(cipher[i], Char_Count);
+
+                Char_Count = 0;
+            }
+
+
+            for (int i = 0; i < Num_Of_Char.Count; i++) 
+            {
+                int maxVal = Num_Of_Char.Values.Max();
+                char maxKey = MaxKey(Num_Of_Char, maxVal);
+
+                for (int j = 0; j < cipher.Length; j++) 
+                {
+                    if(maxKey.Equals(cipher[j]))
+                    {
+                        cipher = cipher.Replace(maxKey, Char_frequency[index]);
+                        index++;
+                        break;
+                    }
+                }
+                Num_Of_Char.Remove(maxKey);
+            }
+            return cipher;
+        }
+
+
+
+
+
+
+        public char MaxKey(Dictionary<char, int> Char, int max)
+        {
+            char M_key = new char();
+            foreach (KeyValuePair<char, int> pair in Char)
+            {
+                if (pair.Value == max)
+                {
+                    M_key = pair.Key;
+                    break;
+                }
+            }
+            return M_key;
         }
     }
+
+
 }
