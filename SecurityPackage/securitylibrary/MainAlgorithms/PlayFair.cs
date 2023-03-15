@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -11,150 +14,183 @@ namespace SecurityLibrary
     {
         public string Decrypt(string cipherText, string key)
         {
-            // Build the 5x5 matrix using the key
-            char[,] matrix = BuildMatrix(key);
+            char[,] Table = generateTable(key);
+            cipherText = cipherText.ToLower();
+            
+            string plain = "";
 
-            // Remove spaces and convert to uppercase
-            cipherText = Regex.Replace(cipherText.ToUpper(), @"\s+", "");
-
-            // Split the cipher text into pairs of two
-            string[] pairs = Regex.Matches(cipherText, @"(..)").Cast<Match>().Select(m => m.Value).ToArray();
-
-            // Decrypt each pair of characters
-            StringBuilder result = new StringBuilder();
-            foreach (string pair in pairs)
+            for (int i = 0; i < cipherText.Length; i += 2)
             {
-                char c1 = pair[0];
-                char c2 = pair[1];
-                int row1 = -1, col1 = -1, row2 = -1, col2 = -1;
-
-                // Find the positions of the characters in the matrix
-                for (int row = 0; row < 5; row++)
-                {
-                    for (int col = 0; col < 5; col++)
-                    {
-                        if (matrix[row, col] == c1)
-                        {
-                            row1 = row;
-                            col1 = col;
-                        }
-                        else if (matrix[row, col] == c2)
-                        {
-                            row2 = row;
-                            col2 = col;
-                        }
-                    }
-                }
-
-                // If the characters are in the same row, replace them with the previous characters in that row (wrapping around if necessary)
-                if (row1 == row2)
-                {
-                    result.Append(matrix[row1, (col1 + 4) % 5]);
-                    result.Append(matrix[row2, (col2 + 4) % 5]);
-                }
-                // If the characters are in the same column, replace them with the previous characters in that column (wrapping around if necessary)
-                else if (col1 == col2)
-                {
-                    result.Append(matrix[(row1 + 4) % 5, col1]);
-                    result.Append(matrix[(row2 + 4) % 5, col2]);
-                }
-                // Otherwise, replace each character with the character in the same row but in the other column of the other character
-                else
-                {
-                    result.Append(matrix[row1, col2]);
-                    result.Append(matrix[row2, col1]);
-                }
+                plain += inverseSearch(cipherText[i], cipherText[i + 1], Table);
             }
 
-            return result.ToString();
+            Console.WriteLine(postprocessPlainText(plain));
+            return postprocessPlainText(plain);
         }
 
         public string Encrypt(string plainText, string key)
         {
-            // Build the 5x5 matrix using the key
-            char[,] matrix = BuildMatrix(key);
 
-            // Remove spaces and convert to uppercase
-            plainText = Regex.Replace(plainText.ToUpper(), @"\s+", "");
+            char[,] Table = generateTable(key);
+            string newPlainText = preprocessPlainText(plainText);
 
-            // Pad the plain text with 'X' if necessary
-            if (plainText.Length % 2 != 0)
+            string cipher = "";
+
+            for (int i =0; i <  newPlainText.Length; i += 2)
             {
-                plainText += 'X';
+                cipher += search(newPlainText[i], newPlainText[i + 1], Table);
             }
 
-            // Split the plain text into pairs of two
-            string[] pairs = Regex.Matches(plainText, ".{2}").Cast<Match>().Select(m => m.Value).ToArray();
-
-            // Encrypt each pair of characters
-            StringBuilder result = new StringBuilder();
-            foreach (string pair in pairs)
-            {
-                char c1 = pair[0];
-                char c2 = pair[1];
-                int row1 = -1, col1 = -1, row2 = -1, col2 = -1;
-
-                // Find the positions of the characters in the matrix
-                for (int row = 0; row < 5; row++)
-                {
-                    for (int col = 0; col < 5; col++)
-                    {
-                        if (matrix[row, col] == c1)
-                        {
-                            row1 = row;
-                            col1 = col;
-                        }
-                        else if (matrix[row, col] == c2)
-                        {
-                            row2 = row;
-                            col2 = col;
-                        }
-                    }
-                }
-
-                // If the characters are in the same row, replace them with the next characters in that row (wrapping around if necessary)
-                if (row1 == row2)
-                {
-                    result.Append(matrix[row1, (col1 + 1) % 5]);
-                    result.Append(matrix[row2, (col2 + 1) % 5]);
-                }
-                // If the characters are in the same column, replace them with the next characters in that column (wrapping around if necessary)
-                else if (col1 == col2)
-                {
-                    result.Append(matrix[(row1 + 1) % 5, col1]);
-                    result.Append(matrix[(row2 + 1) % 5, col2]);
-                }
-                // Otherwise, replace each character with the character in the same row but in the other column of the other character
-                else
-                {
-                    result.Append(matrix[row1, col2]);
-                    result.Append(matrix[row2, col1]);
-                }
-            }
-
-            return result.ToString();
+            return cipher;
         }
 
-        private char[,] BuildMatrix(string key)
-        {
-            // Remove duplicates and spaces, and convert to uppercase
-            string cleanedKey = new string(key.ToUpper().Distinct().Where(c => !Char.IsWhiteSpace(c)).ToArray());
 
-            // Pad the key with remaining letters of the alphabet
-            string alphabet = "OmarElshenawy";
-            string paddedKey = cleanedKey + new string(alphabet.Except(cleanedKey).ToArray());
+        private char[,] generateTable(string key) {
 
-            // Build the 5x5 matrix
-            char[,] matrix = new char[5, 5];
-            for (int row = 0; row < 5; row++)
+            string alphabet = "abcdefghiklmnopqrstuvwxyz";
+            string restAlphabet = key + alphabet;
+            restAlphabet = string.Join("", restAlphabet.ToCharArray().Distinct()); // remove duplicates
+
+            char[,] Table = new char[5, 5];
+
+            for (int i = 0; i < 5; i++)
             {
-                for (int col = 0; col < 5; col++)
+                for (int j = 0; j < 5; j++)
                 {
-                    matrix[row, col] = paddedKey[row * 5 + col];
+                    Table[i, j] = restAlphabet[ (i * 5) + j];
                 }
             }
 
-            return matrix;
+            return Table;
+        }
+       
+        private string preprocessPlainText(string plainText)
+        {
+            for (int i = 0; i < plainText.Length; i++)
+            {
+
+                if (i + 1 < plainText.Length && plainText[i] == plainText[i + 1])
+                {
+                    if (i % 2 == 0)
+                    {
+                        plainText = plainText.Insert(i + 1, "x");
+                    }
+                }          
+            }
+
+            if (plainText.Length % 2  != 0)
+                plainText += "x";
+
+            return plainText;
+        }
+
+        private string search(char A, char B, char[,] Table)
+        {
+            int indexArow = -1, indexAcol = -1, indexBrow = -1, indexBcol = -1;
+            string answer = "";
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j =0; j < 5; j++)
+                {
+                    if (indexArow != -1 && indexBrow != -1)
+                    {
+                        break;
+                    }
+
+                    if (Table[i,j] == A)
+                    {
+                        indexArow = i;
+                        indexAcol = j;
+                    }else if (Table[i,j] == B)
+                    {
+                        indexBrow = i;
+                        indexBcol = j;
+                    }
+
+                }
+            }
+
+            if (indexArow == indexBrow)
+            {
+                answer += Table[indexArow, (indexAcol + 1) % 5];
+                answer += Table[indexBrow, (indexBcol + 1) % 5];
+
+            }
+            else if (indexAcol == indexBcol)
+            {
+                answer += Table[ (indexArow + 1) % 5, indexAcol];
+                answer += Table[ (indexBrow + 1) % 5, indexBcol];
+            }else
+            {
+                answer += Table[indexArow , indexBcol];
+                answer += Table[indexBrow, indexAcol];
+            }
+
+            return answer;
+        }
+
+        private string inverseSearch(char A, char B, char[,] Table)
+        {
+            int indexArow = -1, indexAcol = -1, indexBrow = -1, indexBcol = -1;
+            string answer = "";
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    if (indexArow != -1 && indexBrow != -1)
+                    {
+                        break;
+                    }
+
+                    if (Table[i, j] == A)
+                    {
+                        indexArow = i;
+                        indexAcol = j;
+                    }
+                    else if (Table[i, j] == B)
+                    {
+                        indexBrow = i;
+                        indexBcol = j;
+                    }
+
+                }
+            }
+
+            if (indexArow == indexBrow)
+            {
+                answer += Table[indexArow, ((indexAcol - 1) < 0 ? (indexAcol - 1 + 5) : (indexAcol - 1)) % 5];
+                answer += Table[indexBrow, ((indexBcol - 1) < 0 ? (indexBcol - 1 + 5) : (indexBcol - 1)) % 5];
+
+            }
+            else if (indexAcol == indexBcol)
+            {
+                answer += Table[((indexArow - 1) < 0 ? (indexArow - 1 + 5) : (indexArow - 1)) % 5, indexAcol];
+                answer += Table[((indexBrow - 1) < 0 ? (indexBrow - 1 + 5) : (indexBrow - 1)) % 5, indexBcol];
+            }
+            else
+            {
+                answer += Table[indexArow, indexBcol];
+                answer += Table[indexBrow, indexAcol];
+            }
+
+            return answer;
+        }
+
+        private string postprocessPlainText(string plainText) // postProcess huh? patent here
+        {
+            if (plainText[plainText.Length -1] == 'x')
+                plainText = plainText.Remove(plainText.Length - 1, 1);
+
+            for (int i = 0; i < plainText.Length; i+=2)
+            {
+                if (i+2 < plainText.Length && plainText[i] == plainText[i + 2] && plainText[i + 1] == 'x')
+                {
+                    plainText = plainText.Remove(i + 1, 1);
+                    i--;
+                }
+            }
+
+            return plainText;
         }
     }
 }
