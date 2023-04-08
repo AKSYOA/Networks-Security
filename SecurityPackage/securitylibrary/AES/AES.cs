@@ -9,11 +9,14 @@ namespace SecurityLibrary.AES
     /// <summary>
     /// If the string starts with 0x.... then it's Hexadecimal not string
     /// </summary>
-    public class AES : CryptographicTechnique { 
+    public class AES : CryptographicTechnique
+    {
         int[,] Key = new int[4, 4];
-        int[,] matrix = new int[4, 4];       
+        int[,] matrix = new int[4, 4];
+        int[,] ColMatrix = new int[4, 4];
 
-       int[,] s_box = {
+
+        int[,] s_box = {
               { 0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76 },
               { 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0 },
               { 0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15 },
@@ -77,7 +80,99 @@ namespace SecurityLibrary.AES
                 }
             }
         }
+        public int SSize(int number)
+        {
+            number = number << 1;
+            return (number % 256);
+        }
+        public bool Check(int num)
+        {
+            return (num >> 7 & 1) == 1;
+        }
+        public int power(int n, int p)
+        {
+            if (p == 1)
+                return n;
+            int x = 0;
+            if (p % 2 == 1)
+            {
+                x ^= n;
+            }
 
+            int val = power(n, p / 2);
+            if (Check(val) == true)
+            {
+                val = SSize(val);
+                val = val ^ 27;
+            }
+            //0
+            else
+            {
+                val = SSize(val);
+            }
+            return val ^ x;
+        }
+        public void MakeMatrix(string plain, int num)
+        {
+            int index = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    string hex = "0x" + plain[index] + plain[index + 1];
+                    int val = Convert.ToInt32(hex, 16);
+                    index += 2;
+                    if (num == 1)
+                        matrix[j, i] = val;
+                    else if (num == 2)
+                        Key[j, i] = val;
+                    else if (num == 3)
+                        ColMatrix[i, j] = val;
+                }
+            }
+        }
+        public void MixColumns()
+        {
+            for (int a = 0; a < 4; a++)
+            {
+                int[,] col = new int[4, 1];
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        col[i, 0] ^= power(ColMatrix[i, j], matrix[j, a]);
+                    }
+                }
+
+                for (int i = 0; i < 4; ++i)
+                {
+                    matrix[i, a] = col[i, 0];
+                }
+            }
+        }
+        public void keySchedule(int round)
+        {
+            int[,] Rconmat = new int[4, 1];
+            string Rcon = "01020408102040801b36";
+            int val = Convert.ToInt32(Rcon.Substring(round * 2, 2), 16);
+            Rconmat[0, 0] = val;
+            int[,] arr = new int[4, 1];
+            arr[3, 0] = Key[0, 3];
+            for (int i = 0; i < 3; i++)
+                arr[i, 0] = Key[i, 3];
+            SubBytes(arr, 4, 1);
+            for (int k = 0; k < 4; k++)
+            {
+                Key[k, 0] = Key[k, 0] ^ arr[k, 0] ^ Rconmat[k, 0];
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 1; j < 4; j++)
+                {
+                    Key[i, j] = Key[i, j] ^ Key[i, j];
+                }
+            }
+        }
 
         public override string Decrypt(string cipherText, string key)
         {
