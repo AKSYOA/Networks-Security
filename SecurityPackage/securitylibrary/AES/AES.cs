@@ -34,6 +34,25 @@ namespace SecurityLibrary.AES
               { 0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf },
               { 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 },
        };
+        public void MakeMatrix(string plain, int num)
+        {
+            int index = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    string hex = "0x" + plain[index] + plain[index + 1];
+                    int val = Convert.ToInt32(hex, 16);
+                    index += 2;
+                    if (num == 1)
+                        matrix[j, i] = val;
+                    else if (num == 2)
+                        ColMatrix[i, j] = val;
+                    else if (num == 3)
+                        Key[j,i] = val;
+                }
+            }
+        }
         public void RoundKey()
         {
             for (int i = 0; i < 4; i++)
@@ -112,25 +131,7 @@ namespace SecurityLibrary.AES
             }
             return val ^ x;
         }
-        public void MakeMatrix(string plain, int num)
-        {
-            int index = 0;
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    string hex = "0x" + plain[index] + plain[index + 1];
-                    int val = Convert.ToInt32(hex, 16);
-                    index += 2;
-                    if (num == 1)
-                        matrix[j, i] = val;
-                    else if (num == 2)
-                        Key[j, i] = val;
-                    else if (num == 3)
-                        ColMatrix[i, j] = val;
-                }
-            }
-        }
+        
         public void MixColumns()
         {
             for (int a = 0; a < 4; a++)
@@ -140,7 +141,7 @@ namespace SecurityLibrary.AES
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        col[i, 0] ^= power(ColMatrix[i, j], matrix[j, a]);
+                        col[i, 0] ^= power(matrix[j, a], ColMatrix[i, j]);
                     }
                 }
 
@@ -159,7 +160,7 @@ namespace SecurityLibrary.AES
             int[,] arr = new int[4, 1];
             arr[3, 0] = Key[0, 3];
             for (int i = 0; i < 3; i++)
-                arr[i, 0] = Key[i, 3];
+                arr[i, 0] = Key[i + 1, 3];
             SubBytes(arr, 4, 1);
             for (int k = 0; k < 4; k++)
             {
@@ -169,11 +170,29 @@ namespace SecurityLibrary.AES
             {
                 for (int j = 1; j < 4; j++)
                 {
-                    Key[i, j] = Key[i, j] ^ Key[i, j];
+                    Key[i, j] = Key[i, j - 1] ^ Key[i, j];
                 }
             }
         }
+        public string Res()
+        {
+            string S = "";
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    string S2 = matrix[j, i].ToString("x");
+                    if (S2.Length < 2)
+                        S += "0" + S2;
+                    else
+                        S += S2;
+                }
 
+            }
+            S = S.ToUpper();
+            S = "0x" + S;
+            return S;
+        }
         public override string Decrypt(string cipherText, string key)
         {
             throw new NotImplementedException();
@@ -181,7 +200,30 @@ namespace SecurityLibrary.AES
 
         public override string Encrypt(string plainText, string key)
         {
-            throw new NotImplementedException();
+            plainText = plainText.Remove(0, 2);
+            plainText = plainText.ToLower();
+            key = key.Remove(0, 2);
+            key = key.ToLower();
+            MakeMatrix(plainText, 1);
+            string ColMat = "02030101010203010101020303010102";
+            MakeMatrix(ColMat, 2);
+            MakeMatrix(key, 3);
+
+            RoundKey();
+            keySchedule(0);
+
+            for (int n = 1; n < 10; n++)
+            {
+                SubBytes(matrix, 4, 4);
+                ShiftRows(4);
+                MixColumns();
+                RoundKey();
+                keySchedule(n);
+            }
+            SubBytes(matrix, 4, 4);
+            ShiftRows(4);
+            RoundKey();
+            return Res();
         }
     }
 }
