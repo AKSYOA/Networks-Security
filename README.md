@@ -9,5 +9,8 @@ Package for Implementing Computer Networks Security Algorithms &amp; Techniques 
 
 ~HillCipher : Youssef~
 
-playFair: Omar
+~playFair: Omar~
 
+DES : Sa3d
+
+AES : Youssef
