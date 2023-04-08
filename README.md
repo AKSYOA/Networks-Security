@@ -11,6 +11,6 @@ Package for Implementing Computer Networks Security Algorithms &amp; Techniques 
 
 ~playFair: Omar~
 
-DES : Sa3d
+~DES & tripleDES : Sa3d~
 
 AES : Youssef
