@@ -174,6 +174,90 @@ namespace SecurityLibrary.AES
                 }
             }
         }
+
+        public void shiftrows_Dec()
+        {
+            for (int i = 1; i < 4; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int x = matrix[i, 0];
+                    for (int k = 2; k >= 0; k--)
+                    {
+                        matrix[i, k + 1] = matrix[i, k];
+                    }
+                    matrix[i, 0] = x;
+                }
+            }
+        }
+
+        public void keyschedule_Dec(int round)
+        {
+            int[,] Rconmat = new int[4, 1];
+            string Rcon = "01020408102040801b36";
+            int val = Convert.ToInt32(Rcon.Substring(round * 2, 2), 16);
+            Rconmat[0, 0] = val;
+            int[,] arr = new int[4, 1];
+            for (int i = 3; i >= 1; i--)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    Key[j, i] = Key[j, i] ^ Key[j, i - 1];
+                }
+            }
+            arr[3, 0] = Key[0, 3];
+            for (int i = 0; i < 3; i++)
+                arr[i, 0] = Key[i + 1, 3];
+            SubBytes(arr, 4, 1);
+            for (int i = 0; i < 4; i++)
+            {
+                Key[i, 0] = Key[i, 0] ^ arr[i, 0] ^ Rconmat[i, 0];
+            }
+
+        }
+        int[,] ss_box = new int[16, 16];
+        public void SubBytes_Dec(int[,] matrix, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    int a = matrix[i, j] / 16;
+                    int b = matrix[i, j] % 16;
+                    matrix[i, j] = ss_box[a, b];
+                }
+
+            }
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    Console.WriteLine(matrix[i, j].ToString("x"));
+                }
+
+            }
+
+
+        }
+        
+
+        public void inverseSbox()
+        {
+
+
+            int x = 0;
+            for (int i = 0; i < 16; i++)
+            {
+
+                for (int j = 0; j < 16; j++)
+                {
+                    x = s_box[i, j];
+                    int a = x / 16;
+                    int b = x % 16;
+                    ss_box[a, b] = i  + j * 16;
+                }
+            }
+        }
         public string Res()
         {
             string S = "";
