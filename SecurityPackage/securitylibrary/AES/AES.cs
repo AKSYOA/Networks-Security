@@ -181,7 +181,7 @@ namespace SecurityLibrary.AES
             {
                 for (int j = 0; j < i; j++)
                 {
-                    int x = matrix[i, 0];
+                    int x = matrix[i, 3];
                     for (int k = 2; k >= 0; k--)
                     {
                         matrix[i, k + 1] = matrix[i, k];
@@ -213,9 +213,7 @@ namespace SecurityLibrary.AES
             {
                 Key[i, 0] = Key[i, 0] ^ arr[i, 0] ^ Rconmat[i, 0];
             }
-
         }
-        int[,] ss_box = new int[16, 16];
         public void SubBytes_Dec(int[,] matrix, int n)
         {
             for (int i = 0; i < n; i++)
@@ -226,7 +224,6 @@ namespace SecurityLibrary.AES
                     int b = matrix[i, j] % 16;
                     matrix[i, j] = ss_box[a, b];
                 }
-
             }
             for (int i = 0; i < n; i++)
             {
@@ -234,17 +231,12 @@ namespace SecurityLibrary.AES
                 {
                     Console.WriteLine(matrix[i, j].ToString("x"));
                 }
-
             }
-
-
         }
-        
+        int[,] ss_box = new int[16, 16];
 
         public void inverseSbox()
         {
-
-
             int x = 0;
             for (int i = 0; i < 16; i++)
             {
@@ -254,7 +246,7 @@ namespace SecurityLibrary.AES
                     x = s_box[i, j];
                     int a = x / 16;
                     int b = x % 16;
-                    ss_box[a, b] = i  + j * 16;
+                    ss_box[a,b] = i * 16 + j;
                 }
             }
         }
@@ -279,7 +271,33 @@ namespace SecurityLibrary.AES
         }
         public override string Decrypt(string cipherText, string key)
         {
-            throw new NotImplementedException();
+            cipherText = cipherText.Remove(0, 2);
+            cipherText = cipherText.ToLower();
+            key = key.Remove(0, 2);
+            key = key.ToLower();
+            string inverse_Mcolumn = "0E0B0D09090E0B0D0D090E0B0B0D090E";
+            MakeMatrix(cipherText, 1);
+            MakeMatrix(inverse_Mcolumn, 2);
+            MakeMatrix(key, 3);
+            inverseSbox();
+            for (int i = 0; i < 10; i++)
+                keySchedule(i);
+
+            RoundKey();
+            shiftrows_Dec();
+            SubBytes_Dec(matrix, 4);
+
+            for (int i = 9; i >= 1; i--)
+            {
+                keyschedule_Dec(i);
+                RoundKey();
+                MixColumns();
+                shiftrows_Dec();
+                SubBytes_Dec(matrix, 4);
+            }
+            keyschedule_Dec(0);
+            RoundKey();
+            return Res();
         }
 
         public override string Encrypt(string plainText, string key)
