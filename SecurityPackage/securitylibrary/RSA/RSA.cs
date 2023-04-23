@@ -17,9 +17,11 @@ namespace SecurityLibrary.RSA
 
         public int Decrypt(int p, int q, int C, int e)
         {
-            int n = p * q;
             ExtendedEuclid extendedEculid = new ExtendedEuclid();
+
+            int n = p * q;
             int d = extendedEculid.GetMultiplicativeInverse(e, (p - 1) * (q - 1));
+
             return FastPower(C, d, n);
         }
 
